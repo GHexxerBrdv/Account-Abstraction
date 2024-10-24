@@ -95,7 +95,7 @@ contract TestMinimalAccount is Test {
         vm.prank(helper.getConfig().entryPoint);
         uint256 validationData = minimalAccount.validateUserOp(packedUserOp, userOperationHash, missingAccountFunds);
 
-        assertEq(validationData, 0);
+        assertEq(validationData, 0); // 0 meanse it is verified.
     }
 
     function testEntryPointCanExecuteCommands() public {
