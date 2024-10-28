@@ -59,15 +59,13 @@ contract ZkMinimalAccount is IAccount, Ownable {
     }
 
     modifier requireFromBootLoaderOrOwner() {
-        if(msg.sender != BOOTLOADER_FORMAL_ADDRESS && msg.sender != owner()) {
+        if (msg.sender != BOOTLOADER_FORMAL_ADDRESS && msg.sender != owner()) {
             revert ZkMinimalAccount__NotFromBootLoaderOrOwner();
         }
         _;
     }
 
-    receive() external payable {
-
-    }
+    receive() external payable {}
 
     function validateTransaction(bytes32 _txHash, bytes32 _suggestedSignedHash, Transaction memory _transaction)
         external
@@ -75,12 +73,10 @@ contract ZkMinimalAccount is IAccount, Ownable {
         requireFromBootLoader
         returns (bytes4 magic)
     {
-
         return _validateTransaction(_transaction);
         //Call nonce holder
         //Increment nonce
         //call(x, y, z) -> system contract call
-        
     }
 
     function executeTransaction(bytes32 _txHash, bytes32 _suggestedSignedHash, Transaction memory _transaction)
@@ -88,14 +84,14 @@ contract ZkMinimalAccount is IAccount, Ownable {
         payable
         requireFromBootLoaderOrOwner
     {
-       _executeTransaction(_transaction);
+        _executeTransaction(_transaction);
     }
 
     // There is no point in providing possible signed hash in the `executeTransactionFromOutside` method,
     // since it typically should not be trusted.
     function executeTransactionFromOutside(Transaction memory _transaction) external payable {
-       bytes4 magic = _validateTransaction(_transaction);
-       if (magic != ACCOUNT_VALIDATION_SUCCESS_MAGIC) {
+        bytes4 magic = _validateTransaction(_transaction);
+        if (magic != ACCOUNT_VALIDATION_SUCCESS_MAGIC) {
             revert ZkMinimalAccount__InvalidSignature();
         }
         _executeTransaction(_transaction);
@@ -107,7 +103,7 @@ contract ZkMinimalAccount is IAccount, Ownable {
     {
         bool success = _transaction.payToTheBootloader();
 
-        if(!success) {
+        if (!success) {
             revert ZkMinimalAccount__FiledToPay();
         }
     }
@@ -117,7 +113,7 @@ contract ZkMinimalAccount is IAccount, Ownable {
         payable
     {}
 
-    function _validateTransaction(Transaction memory _transaction) internal returns(bytes4 magic) {
+    function _validateTransaction(Transaction memory _transaction) internal returns (bytes4 magic) {
         SystemContractsCaller.systemCallWithPropagatedRevert(
             uint32(gasleft()),
             address(NONCE_HOLDER_SYSTEM_CONTRACT),
@@ -146,7 +142,7 @@ contract ZkMinimalAccount is IAccount, Ownable {
     }
 
     function _executeTransaction(Transaction memory _transaction) internal {
-         address to = address(uint160(_transaction.to));
+        address to = address(uint160(_transaction.to));
         uint128 value = Utils.safeCastToU128(_transaction.value);
         bytes memory data = _transaction.data;
 

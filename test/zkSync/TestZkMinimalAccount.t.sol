@@ -6,8 +6,8 @@ import {ZkMinimalAccount} from "../../src/zkSync/ZkMinimalAccount.sol";
 
 contract TestZkMinimalAccount is Test {
     ZkMinimalAccount minimalAccount;
+
     function setUp() public {
         minimalAccount = new ZkMinimalAccount();
-        
     }
 }
