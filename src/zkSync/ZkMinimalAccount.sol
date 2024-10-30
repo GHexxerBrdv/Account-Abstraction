@@ -67,7 +67,7 @@ contract ZkMinimalAccount is IAccount, Ownable {
 
     receive() external payable {}
 
-    function validateTransaction(bytes32 _txHash, bytes32 _suggestedSignedHash, Transaction memory _transaction)
+    function validateTransaction(bytes32 /*_txHash*/, bytes32 /*_suggestedSignedHash*/, Transaction memory _transaction)
         external
         payable
         requireFromBootLoader
@@ -79,7 +79,7 @@ contract ZkMinimalAccount is IAccount, Ownable {
         //call(x, y, z) -> system contract call
     }
 
-    function executeTransaction(bytes32 _txHash, bytes32 _suggestedSignedHash, Transaction memory _transaction)
+    function executeTransaction(bytes32 /*_txHash*/, bytes32 /*_suggestedSignedHash*/, Transaction memory _transaction)
         external
         payable
         requireFromBootLoaderOrOwner
@@ -97,7 +97,7 @@ contract ZkMinimalAccount is IAccount, Ownable {
         _executeTransaction(_transaction);
     }
 
-    function payForTransaction(bytes32 _txHash, bytes32 _suggestedSignedHash, Transaction memory _transaction)
+    function payForTransaction(bytes32 /*_txHash*/, bytes32 /*_suggestedSignedHash*/, Transaction memory _transaction)
         external
         payable
     {
@@ -108,14 +108,15 @@ contract ZkMinimalAccount is IAccount, Ownable {
         }
     }
 
-    function prepareForPaymaster(bytes32 _txHash, bytes32 _possibleSignedHash, Transaction memory _transaction)
+    function prepareForPaymaster(bytes32 /*_txHash*/, bytes32 /*_possibleSignedHash*/, Transaction memory _transaction)
         external
         payable
     {}
 
     function _validateTransaction(Transaction memory _transaction) internal returns (bytes4 magic) {
+        uint32 gas = Utils.safeCastToU32(gasleft());
         SystemContractsCaller.systemCallWithPropagatedRevert(
-            uint32(gasleft()),
+            gas,
             address(NONCE_HOLDER_SYSTEM_CONTRACT),
             0,
             abi.encodeCall(INonceHolder.incrementMinNonceIfEquals, _transaction.nonce)
